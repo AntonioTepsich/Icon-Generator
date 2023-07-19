@@ -4,6 +4,8 @@ import { Input } from "../component/input";
 import { FormGroup } from "~/component/FormGroup";
 import { useState } from "react";
 import { api } from "~/utils/api";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "~/component/Button";
 
 const GeneratePage: NextPage = () => {
 
@@ -27,6 +29,10 @@ const GeneratePage: NextPage = () => {
         }
     }
 
+    const session = useSession();
+
+    const isLoggedIn = session.data;
+
     return (
         <>
             <Head>
@@ -35,13 +41,20 @@ const GeneratePage: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="flex min-h-screen flex-col items-center justify-center">
+                {!isLoggedIn && (
+                <Button onClick={() => signIn().catch(console.error)} >LogIn</Button>
+                )}
+                {isLoggedIn && (
+                <Button onClick={() => signOut().catch(console.error)} >LogOut</Button>
+                )}
+                {session.data?.user.name}
                 <form className="flex flex-col gap-4"
                     onSubmit={handleFormSubmit} >
                     <FormGroup> 
                         <label>Prompt</label>
                         <Input value={form.prompt} onChange={updateForm("prompt")} />
                     </FormGroup>
-                    <button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</button>
+                    <Button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</Button>
                 </form>
             </main>
         </>
