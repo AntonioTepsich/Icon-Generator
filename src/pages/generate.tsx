@@ -13,8 +13,15 @@ const GeneratePage: NextPage = () => {
         prompt: "",
     });
 
-    const generateIcon = api.generate.generateIcon.useMutation();
+    const [imageUrl, setImageUrl] = useState("");
 
+    const generateIcon = api.generate.generateIcon.useMutation({
+        onSuccess(data) {
+            console.log("mutation finished", data.imageUrl);
+            if(!data.imageUrl) return;
+            setImageUrl(data.imageUrl);
+        }
+    });
     function handleFormSubmit(e: React.FormEvent){
         e.preventDefault();
         generateIcon.mutate({prompt: form.prompt,});
@@ -47,7 +54,6 @@ const GeneratePage: NextPage = () => {
                 {isLoggedIn && (
                 <Button onClick={() => signOut().catch(console.error)} >LogOut</Button>
                 )}
-                {session.data?.user.name}
                 <form className="flex flex-col gap-4"
                     onSubmit={handleFormSubmit} >
                     <FormGroup> 
@@ -56,6 +62,8 @@ const GeneratePage: NextPage = () => {
                     </FormGroup>
                     <Button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</Button>
                 </form>
+
+                <img src={imageUrl} alt="" />
             </main>
         </>
     );
