@@ -85,7 +85,7 @@ export const generateRouter = createTRPCRouter({
 
 
         return {
-            imageUrl: base64EnCodedImage,
+            imageUrl: `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${icon.id}`,
         }
     })
 });

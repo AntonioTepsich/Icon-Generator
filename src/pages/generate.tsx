@@ -6,6 +6,7 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "~/component/Button";
+import Image from "next/image";
 
 const GeneratePage: NextPage = () => {
 
@@ -63,8 +64,8 @@ const GeneratePage: NextPage = () => {
                     <Button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</Button>
                 </form>
 
-                <img 
-                    src={`data:image/png;base64,${imageUrl}`} 
+                <Image 
+                    src={imageUrl} 
                     alt="an image of your generated prompt" 
                     width={100} 
                     height={100} 

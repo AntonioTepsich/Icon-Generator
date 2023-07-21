@@ -16,7 +16,7 @@ const config = {
   images: {
     domains: [
       "oaidalleapiprodscus.blob.core.windows.net",
-      "icon-generator-t3.s3.amazonaws.com",
+      "icon-generator-t3.s3.sa-east-1.amazonaws.com",
     ],
   },
 
