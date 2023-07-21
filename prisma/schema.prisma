@@ -56,6 +56,14 @@ model User {
     credits       Int       @default(5)
     accounts      Account[]
     sessions      Session[]
+    icons         Icon[]
+}
+
+model Icon {
+    id        String   @id @default(cuid())
+    prompt    String?
+    userId    String?
+    User      User?     @relation(fields: [userId], references: [id])
 }
 
 model VerificationToken {

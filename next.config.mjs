@@ -10,6 +10,17 @@
 const config = {
   reactStrictMode: true,
 
+  /*
+  we can change the domains if we use openai api
+  */
+  images: {
+    domains: [
+      "oaidalleapiprodscus.blob.core.windows.net",
+      "icon-generator-t3.s3.amazonaws.com",
+    ],
+  },
+
+
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
    * must comment the below `i18n` config out.

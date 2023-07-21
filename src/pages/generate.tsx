@@ -17,7 +17,6 @@ const GeneratePage: NextPage = () => {
 
     const generateIcon = api.generate.generateIcon.useMutation({
         onSuccess(data) {
-            console.log("mutation finished", data.imageUrl);
             if(!data.imageUrl) return;
             setImageUrl(data.imageUrl);
         }
@@ -25,6 +24,7 @@ const GeneratePage: NextPage = () => {
     function handleFormSubmit(e: React.FormEvent){
         e.preventDefault();
         generateIcon.mutate({prompt: form.prompt,});
+        setForm({prompt: ""});
     }
 
     function updateForm( key: string){
@@ -63,7 +63,12 @@ const GeneratePage: NextPage = () => {
                     <Button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</Button>
                 </form>
 
-                <img src={imageUrl} alt="" />
+                <img 
+                    src={`data:image/png;base64,${imageUrl}`} 
+                    alt="an image of your generated prompt" 
+                    width={100} 
+                    height={100} 
+                />
             </main>
         </>
     );
