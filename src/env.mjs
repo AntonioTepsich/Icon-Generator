@@ -31,13 +31,23 @@ const server = z.object({
   AWS_ACCESS_KEY_ID: z.string(),
   AWS_REGION: z.string(),
   AWS_BUCKET_NAME: z.string(),
+
+  // Stripe
+  STRIPE_SECRET_KEY: z.string(),
+  PRICE_ID: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
+
+  // Hosting
+  HOST_NAME: z.string(),
 });
 
 /**
  * Specify your client-side environment variables schema here. This way you can ensure the app isn't
  * built with invalid env vars. To expose them to the client, prefix them with `NEXT_PUBLIC_`.
- */
+*/
 const client = z.object({
+  // Stripe
+  NEXT_PUBLIC_STRIPE_KEY  : z.string(),
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
 });
 
@@ -59,7 +69,11 @@ const processEnv = {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
   AWS_REGION: process.env.AWS_REGION,
   AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
-
+  NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  HOST_NAME: process.env.HOST_NAME,
+  PRICE_ID: process.env.PRICE_ID,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   
   // Delete before production
   MOCK_DALLE: process.env.MOCK_DALLE,

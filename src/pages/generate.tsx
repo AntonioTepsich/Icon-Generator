@@ -7,8 +7,11 @@ import { api } from "~/utils/api";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "~/component/Button";
 import Image from "next/image";
+import { useBuyCredits } from "~/hooks/useBuyCredits";
 
 const GeneratePage: NextPage = () => {
+
+    const {buyCredits} = useBuyCredits();
 
     const [form, setForm] = useState({
         prompt: "",
@@ -53,7 +56,10 @@ const GeneratePage: NextPage = () => {
                 <Button onClick={() => signIn().catch(console.error)} >LogIn</Button>
                 )}
                 {isLoggedIn && (
-                <Button onClick={() => signOut().catch(console.error)} >LogOut</Button>
+                    <>
+                        <Button onClick={() => {buyCredits().catch(console.error)}} >Buy Credits</Button>
+                        <Button onClick={() => signOut().catch(console.error)} >LogOut</Button>
+                    </>
                 )}
                 <form className="flex flex-col gap-4"
                     onSubmit={handleFormSubmit} >
