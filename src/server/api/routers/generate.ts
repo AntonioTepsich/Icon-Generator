@@ -40,6 +40,7 @@ export const generateRouter = createTRPCRouter({
     generateIcon: protectedProcedure
         .input(z.object({
             prompt: z.string(),
+            color: z.string(),
         })
     )
     .mutation(async ({ctx, input}) => {
@@ -64,8 +65,9 @@ export const generateRouter = createTRPCRouter({
             });
         }
 
+        const finalPrompt = `a modern icon in ${input.color} of ${input.prompt}, 3d rendered, metalic material, shiny minimalistic`;
 
-        const base64EnCodedImage = await generateIcon(input.prompt);
+        const base64EnCodedImage = await generateIcon(finalPrompt);
 
         const icon = await ctx.prisma.icon.create({
             data: {
