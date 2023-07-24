@@ -8,9 +8,9 @@ import { b64Image } from "~/data/b64Image";
 import AWS from "aws-sdk";
 
 const s3 = new AWS.S3({
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-    region: env.AWS_REGION,
+    accessKeyId: env.ACCESS_KEY_ID_AWS,
+    secretAccessKey: env.SECRET_ACCESS_KEY_AWS,
+    region: env.REGION_AWS,
 });
 
 
@@ -77,7 +77,7 @@ export const generateRouter = createTRPCRouter({
         });
 
         await s3.putObject({
-            Bucket: env.AWS_BUCKET_NAME,
+            Bucket: env.BUCKET_NAME_AWS,
             Body: Buffer.from(base64EnCodedImage!, 'base64'),
             Key: icon.id,
             ContentEncoding: 'base64',
@@ -87,7 +87,7 @@ export const generateRouter = createTRPCRouter({
 
 
         return {
-            imageUrl: `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${icon.id}`,
+            imageUrl: `https://${env.BUCKET_NAME_AWS}.s3.${env.REGION_AWS}.amazonaws.com/${icon.id}`,
         }
     })
 });

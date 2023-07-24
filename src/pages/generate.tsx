@@ -36,6 +36,7 @@ const GeneratePage: NextPage = () => {
     function handleFormSubmit(e: React.FormEvent){
         e.preventDefault();
         generateIcon.mutate(form);
+        // setForm((prev)=>({...prev, prompt: ""}));
     }
 
     function updateForm( key: string){
