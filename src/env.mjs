@@ -27,10 +27,10 @@ const server = z.object({
   MOCK_DALLE: z.string(),
 
   // AWS s3 
-  SECRET_ACCESS_KEY_AWS: z.string(),
-  ACCESS_KEY_ID_AWS: z.string(),
-  REGION_AWS: z.string(),
-  BUCKET_NAME_AWS: z.string(),
+  SECRET_ACCESS_KEY: z.string(),
+  ACCESS_KEY_ID: z.string(),
+  REGION: z.string(),
+  BUCKET_NAME: z.string(),
 
   // Stripe
   STRIPE_SECRET_KEY: z.string(),
@@ -65,10 +65,10 @@ const processEnv = {
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   DALLE_API_KEY: process.env.DALLE_API_KEY,
-  SECRET_ACCESS_KEY_AWS: process.env.SECRET_ACCESS_KEY_AWS,
-  ACCESS_KEY_ID_AWS: process.env.ACCESS_KEY_ID_AWS,
-  REGION_AWS: process.env.REGION_AWS,
-  BUCKET_NAME_AWS: process.env.BUCKET_NAME_AWS,
+  SECRET_ACCESS_KEY: process.env.SECRET_ACCESS_KEY,
+  ACCESS_KEY_ID: process.env.ACCESS_KEY_ID,
+  REGION: process.env.REGION,
+  BUCKET_NAME: process.env.BUCKET_NAME,
   NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   HOST_NAME: process.env.HOST_NAME,
