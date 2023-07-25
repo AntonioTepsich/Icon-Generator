@@ -23,6 +23,13 @@ const colors = [
     'rounded',
  ]
 
+ const styles = [
+    'claymorphic',
+    '3d rendered',
+    'pixelated',
+    'illustrated with color pencil'
+ ]
+
 const GeneratePage: NextPage = () => {
 
 
@@ -30,18 +37,24 @@ const GeneratePage: NextPage = () => {
         prompt: "",
         color: "",
         shape: "",
+        style: "",
         numberToGenerate: "1",
     });
 
+    const [error, setError] = useState("");
     const [imagesUrl, setImagesUrl] = useState<{imageUrl: string}[]>([]);
 
     const generateIcon = api.generate.generateIcon.useMutation({
         onSuccess(data) {
             setImagesUrl(data);
+        },
+        onError(error){
+            setError(error.message);
         }
     });
     function handleFormSubmit(e: React.FormEvent){
         e.preventDefault();
+        setError("");
         generateIcon.mutate({
             ...form,
             numberToGenerate: parseInt(form.numberToGenerate)
@@ -96,7 +109,18 @@ const GeneratePage: NextPage = () => {
                             </label>    
                         ))}
                     </FormGroup>
-                    <h2 className="text-xl">3. How many do you want.</h2>
+
+                    <h2>4. Pick your icon style.</h2>
+                    <FormGroup className="grid grid-cols-4 mb-12"> 
+                        {styles.map(style => (
+                            <label key={style} className="flex gap-2 text-2xl">
+                                <input type="radio" required name="color" checked={style === form.shape} onChange={()=>setForm((prev)=>({...prev, style}))}></input>
+                                {style}
+                            </label>    
+                        ))}
+                    </FormGroup>
+
+                    <h2 className="text-xl">5. How many do you want.</h2>
                     <FormGroup className="mb-12"> 
                             <label>
                                 Number of icons.
@@ -110,6 +134,12 @@ const GeneratePage: NextPage = () => {
                                 >
                                 </Input>
                     </FormGroup>
+
+                    {error && (
+                        <div className="bg-red-500 text-white p-8 text-xl rounded">
+                            {error}
+                        </div>
+                    )}
                     
                     <Button isLoading={generateIcon.isLoading} disabled={generateIcon.isLoading}>Submit</Button>
                 </form>
