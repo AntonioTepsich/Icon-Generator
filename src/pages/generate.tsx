@@ -17,25 +17,35 @@ const colors = [
     'orange',
 ]
 
+ const shapes = [
+    'circle',
+    'square',
+    'rounded',
+ ]
+
 const GeneratePage: NextPage = () => {
 
 
     const [form, setForm] = useState({
         prompt: "",
         color: "",
+        shape: "",
+        numberToGenerate: "1",
     });
 
-    const [imageUrl, setImageUrl] = useState("");
+    const [imagesUrl, setImagesUrl] = useState<{imageUrl: string}[]>([]);
 
     const generateIcon = api.generate.generateIcon.useMutation({
         onSuccess(data) {
-            if(!data.imageUrl) return;
-            setImageUrl(data.imageUrl);
+            setImagesUrl(data);
         }
     });
     function handleFormSubmit(e: React.FormEvent){
         e.preventDefault();
-        generateIcon.mutate(form);
+        generateIcon.mutate({
+            ...form,
+            numberToGenerate: parseInt(form.numberToGenerate)
+        });
         // setForm((prev)=>({...prev, prompt: ""}));
     }
 
@@ -64,32 +74,59 @@ const GeneratePage: NextPage = () => {
                     <h2>1. Describe what you want your icon to look like</h2>
                     <FormGroup className="mb-12"> 
                         <label>Prompt</label>
-                        <Input value={form.prompt} onChange={updateForm("prompt")} />
+                        <Input value={form.prompt} required onChange={updateForm("prompt")} />
                     </FormGroup>
 
                     <h2>2. Pick your icon color.</h2>
                     <FormGroup className="grid grid-cols-4 mb-12"> 
                         {colors.map(color => (
                             <label key={color} className="flex gap-2 text-2xl">
-                                <input type="radio" name="color" checked={color === form.color} onChange={()=>setForm((prev)=>({...prev, color}))}></input>
+                                <input type="radio" required name="color" checked={color === form.color} onChange={()=>setForm((prev)=>({...prev, color}))}></input>
                                 {color}
                             </label>    
                         ))}
                     </FormGroup>
+
+                    <h2>3. Pick your icon shape.</h2>
+                    <FormGroup className="grid grid-cols-4 mb-12"> 
+                        {shapes.map(shape => (
+                            <label key={shape} className="flex gap-2 text-2xl">
+                                <input type="radio" required name="color" checked={shape === form.shape} onChange={()=>setForm((prev)=>({...prev, shape}))}></input>
+                                {shape}
+                            </label>    
+                        ))}
+                    </FormGroup>
+                    <h2 className="text-xl">3. How many do you want.</h2>
+                    <FormGroup className="mb-12"> 
+                            <label>
+                                Number of icons.
+                            </label>    
+                                <Input value={form.numberToGenerate} 
+                                inputMode="numeric"
+                                pattern="[1-9]|10"
+                                type="number"
+                                required
+                                onChange={updateForm("numberToGenerate")}
+                                >
+                                </Input>
+                    </FormGroup>
                     
                     <Button isLoading={generateIcon.isLoading} disabled={generateIcon.isLoading}>Submit</Button>
                 </form>
-                {imageUrl && (
+                {imagesUrl.length>0 && (
                     <>
                         <h2 className="text-xl">Your Icons</h2>
                         <section className="grid grid-cols-4 gap-4 mb-12">
-                            <Image 
-                                src={imageUrl} 
-                                alt="an image of your generated prompt" 
-                                width={100} 
-                                height={100} 
-                                className="w-full"
-                            />
+                            {imagesUrl.map(({imageUrl})=>(
+                                <Image 
+                                    key={imageUrl}
+                                    src={imageUrl} 
+                                    alt="an image of your generated prompt" 
+                                    width={512} 
+                                    height={512} 
+                                    className="w-full"
+                                />
+                            ))}
                         </section>
 
                     </>

@@ -20,18 +20,18 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 
-async function generateIcon(prompt: string): Promise<string | undefined> {
+async function generateIcon(prompt: string, numberToGenerate=1){
     if(env.MOCK_DALLE === "true") {
-        return b64Image;
+        return new Array<string>(numberToGenerate).fill(b64Image);
     } else{
         const response = await openai.createImage({
             prompt,
-            n: 1,
+            n: numberToGenerate,
             size: "512x512",
             response_format: "b64_json",
         });
 
-        return response.data.data[0]?.b64_json;
+        return response.data.data.map((result)=>result.b64_json || "");
     }
 
 }
@@ -41,6 +41,8 @@ export const generateRouter = createTRPCRouter({
         .input(z.object({
             prompt: z.string(),
             color: z.string(),
+            shape: z.string(),
+            numberToGenerate: z.number().min(1).max(10),
         })
     )
     .mutation(async ({ctx, input}) => {
@@ -65,29 +67,33 @@ export const generateRouter = createTRPCRouter({
             });
         }
 
-        const finalPrompt = `a modern icon in ${input.color} of ${input.prompt}, 3d rendered, metalic material, shiny minimalistic`;
+        const finalPrompt = `a modern ${input.shape} icon in ${input.color} of ${input.prompt}, 3d rendered`;
 
-        const base64EnCodedImage = await generateIcon(finalPrompt);
+        const base64EnCodedImages = await generateIcon(finalPrompt, input.numberToGenerate);
 
-        const icon = await ctx.prisma.icon.create({
-            data: {
-                prompt: input.prompt,
-                userId: ctx.session.user.id,
-            },
+        const createdIcons = await Promise.all(base64EnCodedImages.map(async (image) => {
+            const icon = await ctx.prisma.icon.create({
+                data: {
+                    prompt: input.prompt,
+                    userId: ctx.session.user.id,
+                },
+            });
+            await s3.putObject({
+                Bucket: env.BUCKET_NAME,
+                Body: Buffer.from(image, 'base64'),
+                Key: icon.id,
+                ContentEncoding: 'base64',
+                ContentType: 'image/png',
+            }).promise();
+            return icon;
+        }));
+
+
+
+        return createdIcons.map((icon) => {
+            return {
+                imageUrl: `https://${env.BUCKET_NAME}.s3.${env.REGION}.amazonaws.com/${icon.id}`,
+            }
         });
-
-        await s3.putObject({
-            Bucket: env.BUCKET_NAME,
-            Body: Buffer.from(base64EnCodedImage!, 'base64'),
-            Key: icon.id,
-            ContentEncoding: 'base64',
-            ContentType: 'image/png',
-        }).promise();
-
-
-
-        return {
-            imageUrl: `https://${env.BUCKET_NAME}.s3.${env.REGION}.amazonaws.com/${icon.id}`,
-        }
     })
 });
